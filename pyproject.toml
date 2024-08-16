@@ -1,0 +1,32 @@
+[tool.poetry]
+name = "school-references-search-engine"
+version = "0.1.0"
+description = ""
+authors = ["Charles S <cfstcyr.git@pm.me>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+pypdf2 = "^3.0.1"
+pandas = "^2.2.2"
+requests = "^2.32.3"
+argparse = "^1.4.0"
+tqdm = "^4.66.5"
+sentence-transformers = "^3.0.1"
+openai = "^1.40.8"
+pydantic = "^2.8.2"
+python-dotenv = "^1.0.1"
+codetiming = "^1.4.0"
+
+
+[tool.poetry.group.dev.dependencies]
+ruff = "^0.5.7"
+pyright = "^1.1.376"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.ruff.lint]
+extend-select = ["I", "UP"]
+fixable = ["ALL"]
