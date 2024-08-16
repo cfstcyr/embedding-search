@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "school-references-search-engine"
+name = "embedding-search"
 version = "0.1.0"
 description = ""
 authors = ["Charles S <cfstcyr.git@pm.me>"]
