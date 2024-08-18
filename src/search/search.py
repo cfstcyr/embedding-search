@@ -22,8 +22,9 @@ def search(
     search_results = pd.DataFrame(
         semantic_search(query_embedding, embeddings, top_k=top_k)[0]
     )
+    search_results = search_results.set_index("corpus_id")
 
-    search_results_data = data.iloc[search_results["corpus_id"]].copy()
+    search_results_data = data.iloc[search_results.index].copy()
     search_results_data["score"] = search_results["score"]
 
     return search_results_data

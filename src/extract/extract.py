@@ -16,18 +16,6 @@ EXTRACTORS: dict[str | list[str], type[Extractor]] = {
 }
 
 
-def _extract_file(file: File, type: str) -> pd.DataFrame:
-    for ext, extractor in EXTRACTORS.items():
-        if isinstance(ext, str) and re.match(ext, type) is None:
-            continue
-        if isinstance(ext, list) and type not in ext:
-            continue
-
-        return extractor(file).extract_text()
-
-    raise NotImplementedError(f"Cannot extract file of type {type}")
-
-
 def _combine(data: pd.DataFrame) -> pd.Series:
     data = data.copy()
     header_cols = [c for c in data.columns if c.startswith("h")]
@@ -44,6 +32,24 @@ def _combine(data: pd.DataFrame) -> pd.Series:
     return data["res"]
 
 
+def extract_file(file: File, file_name: str, type: str) -> pd.DataFrame:
+    for ext, extractor in EXTRACTORS.items():
+        if isinstance(ext, str) and re.match(ext, type) is None:
+            continue
+        if isinstance(ext, list) and type not in ext:
+            continue
+
+        data = extractor(file).extract_text()
+
+        data.insert(0, "file", file_name)
+        data["combined_text"] = _combine(data)
+        data = data.reset_index(drop=True)
+
+        return data
+
+    raise NotImplementedError(f"Cannot extract file of type {type}")
+
+
 def extract(file_or_dir: StrOrPath) -> pd.DataFrame:
     extracted_data: pd.DataFrame | None = None
 
@@ -55,8 +61,6 @@ def extract(file_or_dir: StrOrPath) -> pd.DataFrame:
         files = [Path(file_or_dir)]
 
     for file in tqdm(files, desc="Extracting files", unit="file"):
-        print(file)
-
         if not file.is_file():
             print("not file")
             continue
@@ -64,12 +68,10 @@ def extract(file_or_dir: StrOrPath) -> pd.DataFrame:
         file_type = file.suffix[1:]
 
         try:
-            data = _extract_file(file, file_type)
+            data = extract_file(file, file.name, file_type)
         except NotImplementedError as e:
             logger.warn(f"Skipping {file}: {e}")
             continue
-
-        data.insert(0, "file", file.name)
 
         extracted_data = (
             data if extracted_data is None else pd.concat([extracted_data, data])
@@ -78,6 +80,6 @@ def extract(file_or_dir: StrOrPath) -> pd.DataFrame:
     if extracted_data is None:
         raise ValueError(f"No files found in {file_or_dir}")
 
-    extracted_data["combined_text"] = _combine(extracted_data)
+    extracted_data = extracted_data.reset_index(drop=True)
 
     return extracted_data

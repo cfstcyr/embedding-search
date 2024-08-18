@@ -22,15 +22,19 @@ python-dotenv = "^1.0.1"
 codetiming = "^1.4.0"
 
 [tool.poetry.scripts]
-embed = "src.embed.__main__:main"
-extract = "src.extract.__main__:main"
-llm = "src.llm.__main__:main"
-search = "src.search.__main__:main"
+embed = "src.embed.__main__:__main__"
+extract = "src.extract.__main__:__main__"
+llm = "src.llm.__main__:__main__"
+search = "src.search.__main__:__main__"
 
 
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.5.7"
 pyright = "^1.1.376"
+
+
+[tool.poetry.group.app.dependencies]
+streamlit = "^1.37.1"
 
 [build-system]
 requires = ["poetry-core"]
