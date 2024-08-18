@@ -9,12 +9,12 @@ If the user asks for information that is not in the search results, you can let 
 """
 
 LLM_SEARCH_QUERY = """
-This is the search query "{search_query}"
-
 Here are the search results:
 \"\"\"
 {search_results}
 \"\"\"
+
+This is the search query "{search_query}"
 
 Answer the query based on the search results.
 """

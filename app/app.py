@@ -47,6 +47,7 @@ if file:
             embeddings=data_embeddings,
             data=data,
             query_embedding=query_embedding,
+            top_k=3,
         )
 
         llm_model = llm_model_factory_env()
