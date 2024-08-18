@@ -37,20 +37,24 @@ def get_file_embedding(
 
 if file:
     embedder = embedder_factory_env()
-    data, data_embeddings = get_file_embedding(file, embedder)
+
+    with st.spinner("Extracting and embedding document"):
+        data, data_embeddings = get_file_embedding(file, embedder)
 
     chat = st.chat_input("Ask a question")
 
     if chat:
-        query_embedding = embedder.embed(chat)
-        search_results = search(
-            embeddings=data_embeddings,
-            data=data,
-            query_embedding=query_embedding,
-            top_k=3,
-        )
+        with st.spinner("Searching for answers"):
+            query_embedding = embedder.embed(chat)
+            search_results = search(
+                embeddings=data_embeddings,
+                data=data,
+                query_embedding=query_embedding,
+                top_k=3,
+            )
 
-        llm_model = llm_model_factory_env()
-        llm_search_results = llm_search(llm_model, chat, search_results)
+        with st.spinner("Generating response"):
+            llm_model = llm_model_factory_env()
+            llm_search_results = llm_search(llm_model, chat, search_results)
 
         st.write(llm_search_results)
