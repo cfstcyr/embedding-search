@@ -1,9 +1,6 @@
-from typing import Optional
-
 from openai import OpenAI
 from openai.types.chat import (
     ChatCompletionMessageParam,
-    ChatCompletionSystemMessageParam,
     ChatCompletionUserMessageParam,
 )
 
@@ -15,28 +12,20 @@ from .llm_model import LLMModel
 class OpenAILLMModel(LLMModel[OpenAIProvider]):
     def _ask(
         self,
-        question: str,
+        question: str | ChatCompletionUserMessageParam,
         *,
         previous_messages: list[ChatCompletionMessageParam] = [],
-        context: Optional[str] = None,
     ) -> str:
         messages: list[ChatCompletionMessageParam] = previous_messages
-
-        if context is not None:
-            messages.append(
-                ChatCompletionSystemMessageParam(
-                    content=context,
-                    role="system",
-                    name="system",
-                ),
-            )
 
         messages.append(
             ChatCompletionUserMessageParam(
                 content=question,
                 role="user",
                 name="user",
-            ),
+            )
+            if isinstance(question, str)
+            else question,
         )
 
         return (

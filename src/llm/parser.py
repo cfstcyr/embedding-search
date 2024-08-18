@@ -12,3 +12,19 @@ llm_parser.add_argument(
     help="Query",
     required=True,
 )
+
+llm_parser.add_argument(
+    "-e",
+    "--embeddings",
+    type=str,
+    help="File with embeddings",
+    required=True,
+)
+
+llm_parser.add_argument(
+    "-d",
+    "--data",
+    type=str,
+    help="File with data",
+    required=True,
+)
